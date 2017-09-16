@@ -2,8 +2,12 @@
 echo "VASP Automator Script"
 echo "Running at Process ID:$$"
 
-echo "Initial ENCUT : $1"
-echo "Initial Kpoints : $2"
+echo "Enter initial ENCUT:"
+read ENCUT
+echo "Is the material planar(P) or Bulk(B)? "
+read mat_state
+echo "Enter no of initial K-points :"
+read KPOI
 
 if [ -e INCAR ]
 then
@@ -22,5 +26,10 @@ exit 0
 fi
 
 echo "Setting initial ENCUT and KPOINT values..."
-sed -i "3s/na/$1/" INCAR
-sed -i "4s/na na na/$2/" KPOINTS
+sed -i "3s/na/$ENCUT/" INCAR
+if [ $mat_state="P" ]
+then
+sed -i "4s/na na na/$KPOI $KPOI 1/" KPOINTS
+else
+sed -i "4s/na na na/$KPOI $KPOI $KPOI/" KPOINTS
+fi
