@@ -1,4 +1,3 @@
-#!/bin/sh
 echo "Generating INCAR and KPOINTS..."
 touch INCAR
 touch KPOINTS
@@ -20,4 +19,3 @@ echo "0 0 0">>KPOINTS
 echo "KPOINTS generated successfully"
 
 echo "Please create jobfile, POSCAR and PODCAR files"
-
