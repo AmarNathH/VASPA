@@ -2,16 +2,11 @@
 echo "VASP Automator Script"
 echo "Running at Process ID:$$"
 
-echo "Enter initial ENCUT:"
-read ENCUT
-echo "Enter ENCUT_step:"
-read ENCUT_step
-echo "Is the material planar(P) or Bulk(B)? "
-read mat_state
-echo "Enter no of initial K-points :"
-read KPOI
-echo "Enter KPOI_step:"
-read KPOI_step
+read -p "Enter initial ENCUT:" ENCUT
+read -p "Enter ENCUT_step:" ENCUT_step
+read -p "Is the material planar(P) or Bulk(B)? " mat_state
+read -p "Enter no of initial K-points :" KPOI
+read -p "Enter KPOI_step:" KPOI_step
 
 if [ -e INCAR ]
 then
@@ -38,21 +33,19 @@ else
 sed -i "4s/na na na/$KPOI $KPOI $KPOI/" KPOINTS
 fi
 
-acc=0.001
+deltaE_cutoff=0.001 #an accuracy of 1meV
 
-touch ENCUT_data
+touch ENCUT_data #stores ENCUT data
 echo "ENCUT Convergence">ENCUT_data
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
 ./jobfile
-#grep -Po 'E0= \K[^ ]+' out >> ENCUT_data
 ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
-ENERGY=$(printf "%.6f" "$delta_E")
-delta_E=$(grep -Po 'E0= \K[^ ]+' out)
-delta_E=$(printf "%.6f" "$delta_E")
+ENERGY=$(printf "%.6f" "$ENERGY")
+delta_E=$(printf "%.6f" "$ENERGY")
 echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY, dE = 0" >> ENCUT_data
 
-
-while [ 1 -eq "$(echo "$delta_E > $acc" | bc -l)" ]; do
+#loop to calculate ENCUT convergence
+while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
 ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
 KPOI=$(echo "$KPOI + $KPOI_step"|bc)
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
