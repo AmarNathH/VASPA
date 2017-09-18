@@ -48,7 +48,7 @@ ENERGY_I=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY_I=$(printf "%.10f" "$ENERGY_I")
 if [ 1 -eq "$(echo "$ENERGY_I < 0"|bc -l)" ]
 then
-ENERGY_I=$(echo "0-$ENERGY_I"|bc)
+ENERGY_I=$(echo "0 - $ENERGY_I"|bc)
 fi
 
 echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_I, dE = 0" >> ENCUT_data
