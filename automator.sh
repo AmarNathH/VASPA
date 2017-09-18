@@ -42,18 +42,16 @@ touch ENCUT_data #stores ENCUT data
 echo "ENCUT Convergence">ENCUT_data
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
 ./jobfile
-ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
-ENERGY=$(printf "%.6f" "$ENERGY")
-delta_E=$(printf "%.6f" "$ENERGY")
 
-if [ 1 -eq "$(echo "$delta_E<0"|bc -l)" ]
+delta_E=60
+ENERGY_I=$(grep -Po 'E0= \K[^ ]+' out)
+ENERGY_I=$(printf "%.10f" "$ENERGY_I")
+if [ 1 -eq "$(echo "$ENERGY_I < 0"|bc -l)" ]
 then
-delta_E=$(echo "0 - $delta_E"|bc)
-ENERGY=$(echo "0 - $ENERGY"|bc)
+ENERGY_I=$(echo "0-$ENERGY_I"|bc)
 fi
 
-echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY, dE = 0" >> ENCUT_data
-
+echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_I, dE = 0" >> ENCUT_data
 
 #loop to calculate ENCUT convergence
 while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
@@ -61,19 +59,20 @@ ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
 sed -i "3s/.*/ENCUT = $ENCUT/" INCAR #replace ENCUT line in INCAR 
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
 ./jobfile
-ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
-ENERGY=$(printf "%.6f" "$ENERGY")
-if [ 1 -eq "$(echo "$ENERGY <0"|bc -l)"  ]
+ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
+ENERGY_F=$(printf "%.10f" "$ENERGY_F")
+if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
 then
-ENERGY=$(echo "0 - $ENERGY"|bc)
+ENERGY_F=$(echo "0 - $ENERGY_F"|bc)
 fi
 
-delta_E=$(echo "$ENERGY - $delta_E" |bc)
+delta_E=$(echo "$ENERGY_F - $ENERGY_I" |bc)
 if [ 1 -eq "$(echo "$delta_E<0"|bc -l)"  ]
 then
 delta_E=$(echo "0 - $delta_E"|bc)
 fi
 
-echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY, dE = $delta_E" >> ENCUT_data
+echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> ENCUT_data
+ENERGY_I=$(echo "$ENERGY_F"|bc)
 done
 
