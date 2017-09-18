@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/bash
+
 echo "VASP Automator Script"
 echo "Running at Process ID:$$"
 
@@ -50,6 +51,7 @@ sed -i "4s/na na na/$KPOI $KPOI $KPOI/" KPOINTS
 fi
 
 deltaE_cutoff=0.001 #an accuracy of 1meV
+deltaE_cutoff=$(echo "$deltaE_cutoff*(-1)"|bc)
 
 touch ENCUT_data #stores ENCUT data
 echo "ENCUT Convergence">ENCUT_data
@@ -59,16 +61,18 @@ ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY=$(printf "%.6f" "$ENERGY")
 delta_E=$(printf "%.6f" "$ENERGY")
 echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY, dE = 0" >> ENCUT_data
+#delta_E=$(echo "$delta_E*(-1)"|bc) #to make delta_E positive for loop enter
 
 #loop to calculate ENCUT convergence
-while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
+while [ 1 -eq "$(echo "$delta_E < $deltaE_cutoff" | bc -l)" ]; do
 ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
-KPOI=$(echo "$KPOI + $KPOI_step"|bc)
+#write code for writing ENCUT value to INCAR
+sed -i "3s/.*/ENCUT = $ENCUT/" INCAR#replace ENCUT line in INCAR 
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
 ./jobfile
 ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY=$(printf "%.6f" "$delta_E")
-delta_E=$(echo "$delta_E - $ENERGY" |bc)
+delta_E=$(echo "$ENERGY - $delta_E" |bc)
 echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY, dE = $delta_E" >> ENCUT_data
 done
 

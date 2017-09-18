@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 echo "Generating INCAR and KPOINTS..."
 touch INCAR
 touch KPOINTS
