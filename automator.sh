@@ -24,6 +24,22 @@ echo "KPOINTS not found, please use generator script to make one"
 exit 0
 fi
 
+if [ -e POTCAR ]
+then
+echo "POTCAR found"
+else
+echo "POTCAR not found"
+exit 0
+fi
+
+if [ -e POSCAR ]
+then
+echo "POSCAR found"
+else
+echo "POSCAR not found"
+exit 0
+fi
+
 echo "Setting initial ENCUT and KPOINT values..."
 sed -i "3s/na/$ENCUT/" INCAR
 if [ $mat_state="P" ]
