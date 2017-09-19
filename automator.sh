@@ -76,3 +76,41 @@ echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> ENCUT_d
 ENERGY_I=$(echo "$ENERGY_F"|bc)
 done
 
+echo "ENCUT Converged :)"
+echo "Moving on to KPOINT Convergence"
+delta_E=60
+touch KPOINT_data #stores kpoint  data
+echo "KPOINT Convergence">ENCUT_data
+echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
+echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_I, dE = 0" >> KPOINT_data
+
+#loop to calculate KPOINT convergence
+while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
+KPOI=$(echo "$KPOI + $KPOI_step"|bc)
+if [ $mat_state="P" ] #replace KPOINTS in file
+then
+sed -i "4s/.*/$KPOI $KPOI 1/" KPOINTS
+else
+sed -i "4s/.*/$KPOI $KPOI $KPOI/" KPOINTS
+fi
+echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
+./jobfile
+ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
+ENERGY_F=$(printf "%.10f" "$ENERGY_F")
+if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
+then
+ENERGY_F=$(echo "0 - $ENERGY_F"|bc)
+fi
+
+delta_E=$(echo "$ENERGY_F - $ENERGY_I" |bc)
+if [ 1 -eq "$(echo "$delta_E<0"|bc -l)"  ]
+then
+delta_E=$(echo "0 - $delta_E"|bc)
+fi
+
+echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> KPOINT_data
+ENERGY_I=$(echo "$ENERGY_F"|bc)
+done
+
+echo "KPOINT Convergence completed :)"
+echo "Convergence calculations are complete, the data are stored in ENCUT_data and KPOINT_data"
