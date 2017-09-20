@@ -1,1 +1,1 @@
-mpirun -np 16 /opt/packages/vasp/vasp.5.4.1/bin/vasp_std > out
+mpirun -np $1 /opt/packages/vasp/vasp.5.4.1/bin/vasp_std > out

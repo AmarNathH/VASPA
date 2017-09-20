@@ -19,6 +19,7 @@ exit 0
 fi
 
 read -p "Experiment Name:" EXP_N
+read -p "No of cores you want to run simulation on:" N_CORES
 read -p "Enter initial ENCUT:" ENCUT
 read -p "Enter ENCUT_step:" ENCUT_step
 read -p "Is the material planar(P) or Bulk(B)? " mat_state
@@ -41,7 +42,7 @@ deltaE_cutoff=0.001 #an accuracy of 1meV
 touch ENCUT_data #stores ENCUT data
 echo "ENCUT Convergence">ENCUT_data
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
-./jobfile
+./jobfile $N_CORES
 
 delta_E=60
 ENERGY_I=$(grep -Po 'E0= \K[^ ]+' out)
@@ -58,7 +59,7 @@ while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
 ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
 sed -i "3s/.*/ENCUT = $ENCUT/" INCAR #replace ENCUT line in INCAR 
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
-./jobfile
+./jobfile $N_CORES
 ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY_F=$(printf "%.10f" "$ENERGY_F")
 if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
@@ -94,7 +95,7 @@ else
 sed -i "4s/.*/$KPOI $KPOI $KPOI/" KPOINTS
 fi
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
-./jobfile
+./jobfile $N_CORES
 ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY_F=$(printf "%.10f" "$ENERGY_F")
 if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
