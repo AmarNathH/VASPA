@@ -80,37 +80,11 @@ ENERGY_I=$(echo "$ENERGY_F"|bc)
 done
 
 echo "ENCUT Converged :)"
-echo "Running ENCUT loop $ENCUT_LOOP times after convergence."
-
-#Loop to run after ENCUT convergence
-COUNT=0
-while [ "$COUNT" -ne "$ENCUT_LOOP" ]
-do
-ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
-sed -i "3s/.*/ENCUT = $ENCUT/" INCAR #replace ENCUT line in INCAR
-echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
-./jobfile $N_CORES
-ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
-ENERGY_F=$(printf "%.10f" "$ENERGY_F")
-if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
-then
-ENERGY_F=$(echo "0 - $ENERGY_F"|bc)
-fi
-
-delta_E=$(echo "$ENERGY_F - $ENERGY_I" |bc)
-if [ 1 -eq "$(echo "$delta_E<0"|bc -l)"  ]
-then
-delta_E=$(echo "0 - $delta_E"|bc)
-fi
-echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> ENCUT_data
-ENERGY_I=$(echo "$ENERGY_F"|bc)
-((COUNT++))
-done
 
 echo "Moving on to KPOINT Convergence"
 delta_E=60
 touch KPOINT_data #stores kpoint  data
-echo "KPOINT Convergence">ENCUT_data
+echo "KPOINT Convergence">KPOINT_data
 echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
 echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_I, dE = 0" >> KPOINT_data
 
@@ -143,8 +117,35 @@ ENERGY_I=$(echo "$ENERGY_F"|bc)
 done
 
 echo "KPOINT Convergence completed :)"
-echo "Running KPOINT loop $KPOI_LOOP times after convergence."
 
+: '
+echo "Running ENCUT loop $ENCUT_LOOP times after convergence."
+#Loop to run after ENCUT convergence
+COUNT=0
+while [ "$COUNT" -ne "$ENCUT_LOOP" ]
+do
+ENCUT=$(echo "$ENCUT + $ENCUT_step"|bc)
+sed -i "3s/.*/ENCUT = $ENCUT/" INCAR #replace ENCUT line in INCAR
+echo "Running jobfile with ENCUT = $ENCUT and KPOINTS = $KPOI"
+./jobfile $N_CORES
+ENERGY_F=$(grep -Po 'E0= \K[^ ]+' out)
+ENERGY_F=$(printf "%.10f" "$ENERGY_F")
+if [ 1 -eq "$(echo "$ENERGY_F <0"|bc -l)"  ]
+then
+ENERGY_F=$(echo "0 - $ENERGY_F"|bc)
+fi
+
+delta_E=$(echo "$ENERGY_F - $ENERGY_I" |bc)
+if [ 1 -eq "$(echo "$delta_E<0"|bc -l)"  ]
+then
+delta_E=$(echo "0 - $delta_E"|bc)
+fi
+echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> ENCUT_da$
+ENERGY_I=$(echo "$ENERGY_F"|bc)
+((COUNT++))
+done
+
+echo "Running KPOINT loop $KPOI_LOOP times after convergence."
 #Loop to run after KPOINT convergence
 COUNT=0
 while [ "$COUNT" -ne "$KPOI_LOOP" ]
@@ -175,5 +176,6 @@ echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_F, dE = $delta_E" >> KPOINT_
 ENERGY_I=$(echo "$ENERGY_F"|bc)
 ((COUNT++))
 done
+'
 
 echo "Convergence calculations are complete, the data are stored in ENCUT_data and KPOINT_data"
