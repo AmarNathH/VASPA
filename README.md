@@ -10,7 +10,7 @@ sed -i -e 's/\r$//' generate.sh
 You can also use chmod u+x command for resolving file permission issues
 
 ## Running Lattice parameter optimisation
-After doing ENCUT and KPOINT optimisation, The script optimize_lattice.sh can be used to run lattice parameter optimisations, the script basically runs all the files in POSCAR_files directory (Please make sure you make the directory under the same name and put POSCAR files there).
+After doing ENCUT and KPOINT optimisation, The script optimize_latparam.sh can be used to run lattice parameter optimisations, the script basically runs all the files in POSCAR_files directory (Please make sure you make the directory under the same name and put POSCAR files there).
 
 Format for POSCAR files to be stored in POSCAR_files directory : \_POSCAR_<Desired_name>
 
