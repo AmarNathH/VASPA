@@ -22,11 +22,11 @@ read -p "Experiment Name:" EXP_N
 read -p "No of cores you want to run simulation on:" N_CORES
 read -p "Enter initial ENCUT:" ENCUT
 read -p "Enter ENCUT_step:" ENCUT_step
-read -p "No of ENCUT loops you want to run after ENCUT convergence is achieved (0 defaults in normal convergence run):" ENCUT_LOOP 
+#read -p "No of ENCUT loops you want to run after ENCUT convergence is achieved (0 defaults in normal convergence run):" ENCUT_LOOP 
 read -p "Is the material planar(P) or Bulk(B)? " mat_state
 read -p "Enter no of initial K-points :" KPOI
 read -p "Enter KPOI_step:" KPOI_step
-read -p "No of KPOINT loops you want to run after KPOINT convergence is achieved(0 defaults in normal convergence run):" KPOI_LOOP
+#read -p "No of KPOINT loops you want to run after KPOINT convergence is achieved(0 defaults in normal convergence run):" KPOI_LOOP
 
 ./generate.sh $EXP_N
 
