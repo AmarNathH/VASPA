@@ -8,6 +8,9 @@ sed -i -e 's/\r$//' automator.sh
 sed -i -e 's/\r$//' generate.sh
 ```
 You can also use chmod u+x command for resolving file permission issues
+## Running ENCUT and KPOINT optimisation
+The script automator.sh can be used to run ENCUT and KPOINT optimisation, INCAR and KPOINT files will be generated automatically with default values.(Before running the script make sure you have POTCAR and POSCAR files).
+The output will be stored in ENCUT_data and KPOINT_data, and it will contain energy values for corresponding ENCUT and KPOINT values.
 
 ## Running Lattice parameter optimisation
 After doing ENCUT and KPOINT optimisation, The script optimize_latparam.sh can be used to run lattice parameter optimisations, the script basically runs all the files in POSCAR_files directory (Please make sure you make the directory under the same name and put POSCAR files there).
