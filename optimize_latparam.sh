@@ -3,6 +3,14 @@
 echo "CAUTION: Please do ENCUT and KPOINT optimisation before lattice parameter optimisation"
 read -p "No of cores you want to run simulation on:" N_CORES 
 
+if [ -d POSCAR_files ]
+then
+echo "POSCAR_files directory found."
+else
+echo "ERROR: POSCAR_files not found"
+exit 0
+fi
+
 POSCAR_filelist=(POSCAR_files/*_POSCAR*)
 touch POSCAR_data
 echo "POSCAR_data" > POSCAR_data
