@@ -15,7 +15,7 @@ while [ "$COUNT" -ne "${#POSCAR_filelist[@]}" ]
 do
 cat "${POSCAR_filelist[$COUNT]}" > POSCAR
 echo "Running calculation for ${POSCAR_filelist[$COUNT]}"
-./jobfile N_CORES 
+./jobfile $N_CORES 
 ENERGY=$(grep -Po 'E0= \K[^ ]+' out)
 ENERGY=$(printf "%.10f" "$ENERGY")
 echo "File:${POSCAR_filelist[$COUNT]} Energy:$ENERGY" >> POSCAR_data
