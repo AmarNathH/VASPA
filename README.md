@@ -37,5 +37,5 @@ After doing ENCUT and KPOINT optimisation, The script optimize_latparam.sh can b
 
 Format for POSCAR files to be stored in POSCAR_files directory : \_POSCAR_<Desired_name>
 
-<Desired_name> can be anything without spaces
+<Desired_name> can be anything without spaces.
 The output file POSCAR_data will contain the file names and corresponding energy values.
