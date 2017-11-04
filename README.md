@@ -11,6 +11,7 @@ You can also use chmod u+x command for resolving file permission issues
 ## Running ENCUT and KPOINT optimisation
 The script automator.sh can be used to run ENCUT and KPOINT optimisation, INCAR and KPOINT files will be generated automatically with default values.(Before running the script make sure you have POTCAR and POSCAR files).
 The output will be stored in ENCUT_data and KPOINT_data, and it will contain energy values for corresponding ENCUT and KPOINT values.
+
 By default INCAR file will be
 ```
 System = <Experiment Name>
