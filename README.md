@@ -32,7 +32,7 @@ na na na
 If you want to add more INCAR tags like ISPIN...etc, Then you have to make a file named *extra_INCAR_tags* , and enter those tags there. Generate.sh would add those tags which are there in that file.
 
 ## Running Lattice parameter optimisation
-After doing ENCUT and KPOINT optimisation, The script optimize_latparam.sh can be used to run lattice parameter optimisations, the script basically runs all the files in POSCAR_files directory (Please make sure you make the directory under the same name and put POSCAR files there).
+After doing ENCUT and KPOINT optimisation (This script requires INCAR and KPOINT files), The script optimize_latparam.sh can be used to run lattice parameter optimisations, the script basically runs all the files in POSCAR_files directory (Please make sure you make the directory under the same name and put POSCAR files there).
 
 Format for POSCAR files to be stored in POSCAR_files directory : *\_POSCAR_<Desired_name>*
 
