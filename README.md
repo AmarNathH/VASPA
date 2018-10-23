@@ -1,4 +1,6 @@
-# VASPA (VASP Automator) 
+# VASPA (VASP Automator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Scripts for automating SCF calculations, optimizing ENCUT, K-Points and lattice parameters required for carrying out VASP Calculations.
 
 ## Usage
