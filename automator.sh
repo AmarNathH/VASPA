@@ -32,7 +32,7 @@ read -p "Enter KPOI_step:" KPOI_step
 
 echo "Setting initial ENCUT and KPOINT values..."
 sed -i "3s/na/$ENCUT/" INCAR
-if [ "$mat_state" = "P" ]
+if [ $mat_state == "P" ]
 then
 sed -i "4s/.*/$KPOI $KPOI 1/" KPOINTS
 else
@@ -91,7 +91,7 @@ echo "ENCUT = $ENCUT, KPOINTS = $KPOI, E0 = $ENERGY_I, dE = 0" >> KPOINT_data
 #loop to calculate KPOINT convergence
 while [ 1 -eq "$(echo "$delta_E > $deltaE_cutoff" | bc -l)" ]; do
 KPOI=$(echo "$KPOI + $KPOI_step"|bc)
-if [ "$mat_state" = "P" ] #replace KPOINTS in file
+if [ $mat_state == "P" ] #replace KPOINTS in file
 then
 sed -i "4s/.*/$KPOI $KPOI 1/" KPOINTS
 else
